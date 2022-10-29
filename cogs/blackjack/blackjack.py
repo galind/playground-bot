@@ -82,9 +82,22 @@ def game_table(dealer_hand, player_hand):
 
 
 class GameButtons(discord.ui.View):
-    def __init__(self, bot: Playground):
+    def __init__(self, bot: Playground, deck: list, dealer_hand: list, player_hand: list):
         self.bot = bot
+        self.deck = deck
+        self.dealer_hand = dealer_hand
+        self.player_hand = player_hand
         super().__init__(timeout=None)
+
+
+    @discord.ui.button(label='Hit', custom_id='blackjack:hit', style=discord.ButtonStyle.primary)
+    async def hit_button(self, interaction: discord.Interaction, button: discord.Button):
+        pass
+
+
+    @discord.ui.button(label='Stay', custom_id='blackjack:stay', style=discord.ButtonStyle.primary)
+    async def stay_button(self, interaction: discord.Interaction, button: discord.Button):
+        pass
 
 
 class Blackjack(commands.Cog):
@@ -108,5 +121,5 @@ class Blackjack(commands.Cog):
 
 
         embed = game_table(dealer_hand, player_hand)
-        view = GameButtons(self.bot)
-        await interaction.response.send_message(embed=embed)
+        view = GameButtons(self.bot, deck, dealer_hand, player_hand)
+        await interaction.response.send_message(embed=embed, view=view)
