@@ -43,10 +43,6 @@ def get_deck():
     return shuffle_deck(deck)
 
 
-def random_number(deck_len: int):
-    return random.randint(0, deck_len - 1)
-
-
 def calculate_hand(hand: list):
     aces = [c for c in hand if c[0] == 'A']
     non_aces = [c for c in hand if c[0] != 'A']
@@ -111,14 +107,14 @@ class Blackjack(commands.Cog):
         deck = get_deck()
 
         player_hand = []
-        card = deck.pop(random_number(len(deck)))
+        card = deck.pop(0)
         player_hand.append(card)
 
         dealer_hand = []
-        card = deck.pop(random_number(len(deck)))
+        card = deck.pop(0)
         dealer_hand.append(card)
 
-        card = deck.pop(random_number(len(deck)))
+        card = deck.pop(0)
         player_hand.append(card)
 
         embed = game_table(dealer_hand, player_hand)
