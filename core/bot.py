@@ -21,8 +21,8 @@ class Playground(commands.Bot):
             try:
                 await self.load_extension(extension)
                 print(f'Loaded: {extension}')
-            except:
-                print(f'Not loaded: {extension} ({extension})')
+            except Exception as e:
+                print(f'Not loaded: {extension}\n{e}')
 
 
     async def on_ready(self):
