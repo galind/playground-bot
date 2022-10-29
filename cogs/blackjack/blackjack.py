@@ -90,10 +90,10 @@ class GameButtons(discord.ui.View):
     async def hit_button(self, interaction: discord.Interaction, button: discord.Button):
         card = self.deck.pop(0)
         self.player_hand.append(card)
+        player_sum = calculate_hand(self.player_hand)
 
         embed = game_table(self.dealer_hand, self.player_hand)
         view = GameButtons(self.bot, self.deck, self.dealer_hand, self.player_hand)
-        player_sum = calculate_hand(self.player_hand)
         if player_sum > 21:
             embed.add_field(
                 name='Result',
@@ -108,7 +108,39 @@ class GameButtons(discord.ui.View):
 
     @discord.ui.button(label='Stay', custom_id='blackjack:stay', style=discord.ButtonStyle.primary)
     async def stay_button(self, interaction: discord.Interaction, button: discord.Button):
-        pass
+        player_sum = calculate_hand(self.player_hand)
+        dealer_sum = calculate_hand(self.dealer_hand)
+        while dealer_sum <= 16:
+            card = self.deck.pop(0)
+            self.dealer_hand.append(card)
+            dealer_sum = calculate_hand(self.dealer_hand)        
+
+        embed = game_table(self.dealer_hand, self.player_hand)
+
+        if dealer_sum > 21 or player_sum > dealer_sum:
+            embed.add_field(
+                name='Result',
+                value='Player wins',
+                inline=False
+            )
+        elif player_sum == dealer_sum:
+            embed.add_field(
+                name='Result',
+                value='It\'s a draw',
+                inline=False
+            )   
+        else:
+            embed.add_field(
+                name='Result',
+                value='Dealer wins',
+                inline=False
+            )
+
+        view = GameButtons(self.bot, self.deck, self.dealer_hand, self.player_hand)
+        view.hit_button.disabled = True
+        view.stay_button.disabled = True
+
+        await interaction.response.edit_message(embed=embed, view=view)
 
 
 class Blackjack(commands.Cog):
