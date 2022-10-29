@@ -1,6 +1,9 @@
+import logging
 import discord
 from discord.ext import commands
 from . import config
+
+logger = logging.basicConfig(level=logging.ERROR)
 
 initial_extensions = (
     'cogs.blackjack',
