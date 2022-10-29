@@ -21,10 +21,10 @@ cards = {
 }
 
 suits = [
-    '♠️',
-    '♦️',
-    '♣️',
-    '♥️'
+    'Spades',
+    'Diamonds',
+    'Clubs',
+    'Hearts'
 ]
 
 
@@ -39,7 +39,7 @@ def get_deck():
     deck = []
     for s in suits:
         for c in cards:
-            deck.append(f'{c}{s}')
+            deck.append(f'{c} of {s}')
     return shuffle_deck(deck)
 
 
@@ -53,13 +53,32 @@ def calculate_hand(hand: list):
 
     hand_sum = 0
     for c in non_aces:
-        hand_sum += cards[c[:-2]]
+        hand_sum += cards[c.split()[0]]
     for c in aces:
         if hand_sum <= 10:
             hand_sum += 11
         else:
             hand_sum += 1
     return hand_sum
+
+
+def game_table(dealer_hand, player_hand):
+    embed = discord.Embed(title='Blackjack Game')
+
+    dealer_sum = calculate_hand(dealer_hand)
+    embed.add_field(
+        name='Dealer Hand',
+        value='\n'.join(dealer_hand) + f'\n__Value: {dealer_sum}__',
+        inline=False
+    )
+
+    player_sum = calculate_hand(player_hand)
+    embed.add_field(
+        name='Player Hand',
+        value='\n'.join(player_hand) + f'\n__Value: {player_sum}__',
+        inline=False
+    )
+    return embed
 
 
 class GameButtons(discord.ui.View):
@@ -81,10 +100,13 @@ class Blackjack(commands.Cog):
         dealer_hand = []
         card = deck.pop(random_number(len(deck)))
         dealer_hand.append(card)
-        dealer_value = calculate_hand(dealer_hand)
 
         player_hand = []
         for _ in range(2):
             card = deck.pop(random_number(len(deck)))
             player_hand.append(card)
-        player_value = calculate_hand(player_hand)
+
+
+        embed = game_table(dealer_hand, player_hand)
+        view = GameButtons(self.bot)
+        await interaction.response.send_message(embed=embed)
