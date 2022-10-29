@@ -28,6 +28,13 @@ suits = [
 ]
 
 
+def shuffle_deck(deck: list):
+    random.shuffle(deck)
+    random.shuffle(deck)
+    random.shuffle(deck)
+    return deck
+
+
 def get_deck():
     deck = []
     for s in suits:
@@ -36,11 +43,8 @@ def get_deck():
     return shuffle_deck(deck)
 
 
-def shuffle_deck(deck: list):
-    random.shuffle(deck)
-    random.shuffle(deck)
-    random.shuffle(deck)
-    return deck
+def random_number(deck_len: int):
+    return random.randint(0, deck_len - 1)
 
 
 def calculate_hand(hand: list):
@@ -49,7 +53,7 @@ def calculate_hand(hand: list):
 
     hand_sum = 0
     for c in non_aces:
-        hand_sum += cards[c[0]]
+        hand_sum += cards[c[:-2]]
     for c in aces:
         if hand_sum <= 10:
             hand_sum += 11
@@ -72,4 +76,15 @@ class Blackjack(commands.Cog):
     @app_commands.command(name='blackjack')
     async def blackjack_command(self, interaction: discord.Interaction):
         """Start a blackjack game"""
-        pass
+        deck = get_deck()
+
+        dealer_hand = []
+        card = deck.pop(random_number(len(deck)))
+        dealer_hand.append(card)
+        dealer_value = calculate_hand(dealer_hand)
+
+        player_hand = []
+        for _ in range(2):
+            card = deck.pop(random_number(len(deck)))
+            player_hand.append(card)
+        player_value = calculate_hand(player_hand)
