@@ -2,7 +2,9 @@ import discord
 from discord.ext import commands
 from . import config
 
-initial_extensions = ()
+initial_extensions = (
+    'cogs.owner',
+)
 
 
 class Playground(commands.Bot):
