@@ -110,15 +110,16 @@ class Blackjack(commands.Cog):
         """Start a blackjack game"""
         deck = get_deck()
 
+        player_hand = []
+        card = deck.pop(random_number(len(deck)))
+        player_hand.append(card)
+
         dealer_hand = []
         card = deck.pop(random_number(len(deck)))
         dealer_hand.append(card)
 
-        player_hand = []
-        for _ in range(2):
-            card = deck.pop(random_number(len(deck)))
-            player_hand.append(card)
-
+        card = deck.pop(random_number(len(deck)))
+        player_hand.append(card)
 
         embed = game_table(dealer_hand, player_hand)
         view = GameButtons(self.bot, deck, dealer_hand, player_hand)
