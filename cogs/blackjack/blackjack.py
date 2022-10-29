@@ -58,7 +58,7 @@ def calculate_hand(hand: list):
     return hand_sum
 
 
-def game_table(dealer_hand, player_hand):
+def game_table(dealer_hand: list, player_hand: list):
     embed = discord.Embed(title='Blackjack Game')
 
     dealer_sum = calculate_hand(dealer_hand)
@@ -88,7 +88,22 @@ class GameButtons(discord.ui.View):
 
     @discord.ui.button(label='Hit', custom_id='blackjack:hit', style=discord.ButtonStyle.primary)
     async def hit_button(self, interaction: discord.Interaction, button: discord.Button):
-        pass
+        card = self.deck.pop(0)
+        self.player_hand.append(card)
+
+        embed = game_table(self.dealer_hand, self.player_hand)
+        view = GameButtons(self.bot, self.deck, self.dealer_hand, self.player_hand)
+        player_sum = calculate_hand(self.player_hand)
+        if player_sum > 21:
+            embed.add_field(
+                name='Result',
+                value='Dealer wins',
+                inline=False
+            )
+            view.hit_button.disabled = True
+            view.stay_button.disabled = True
+
+        await interaction.response.edit_message(embed=embed, view=view)
 
 
     @discord.ui.button(label='Stay', custom_id='blackjack:stay', style=discord.ButtonStyle.primary)
