@@ -3,6 +3,7 @@ from discord.ext import commands
 from . import config
 
 initial_extensions = (
+    'cogs.blackjack',
     'cogs.owner',
 )
 
@@ -14,15 +15,19 @@ class Playground(commands.Bot):
             intents=discord.Intents.all()
         )
 
+
     async def setup_hook(self):
         for extension in initial_extensions:
             try:
-                pass
+                await self.load_extension(extension)
+                print(f'Loaded: {extension}')
             except:
-                pass
+                print(f'Not loaded: {extension} ({extension})')
+
 
     async def on_ready(self):
         print(f'Ready: {self.user}')
+
 
     async def start(self):
         return await super().start(
